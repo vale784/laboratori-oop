@@ -1,0 +1,24 @@
+package university;
+
+public class Course {
+	
+	final static int startCourId = 10;
+	private String courseName;
+	private String teacher;
+	private int courseId;
+	
+	public Course(String courseName, String teacher,int id){
+		this.courseName = courseName;
+		this.teacher = teacher;
+		this.courseId = startCourId + id;	
+	}
+	
+	public int getCourseId() {
+		return courseId;
+	}
+	
+	public String getCourse() {
+		return courseId + " " + courseName + " " + teacher;
+	}
+
+}

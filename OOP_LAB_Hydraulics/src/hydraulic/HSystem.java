@@ -1,0 +1,101 @@
+package hydraulic;
+
+/**
+ * Main class that act as a container of the elements for
+ * the simulation of an hydraulics system 
+ * 
+ */
+public class HSystem {
+	
+	
+	private final static int MaxElements = 100;
+	private Element [] elList = new Element [MaxElements];
+	private int countElements;
+	private boolean maxElementsReached = false;
+	
+	/**
+	 * Adds a new element to the system
+	 * @param elem
+	 */
+	public void addElement(Element elem){
+		if(maxElementsReached) {
+			System.out.println("Too many elements, last one wont be added");
+			return;
+		}
+		elList[countElements] = elem;
+		if(++countElements == MaxElements)
+			maxElementsReached = true;
+	}
+	
+	/**
+	 * returns the element added so far to the system
+	 * @return an array of elements whose length is equal to the number of added elements
+	 */
+	public Element[] getElements(){
+		Element [] toReturn = new Element[countElements];
+		
+		for(int i=0;i<countElements;i++)
+			toReturn[i] = elList[i];
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Prints the layout of the system starting at each Source
+	 */
+	public String layout(){
+		String res = "";
+		for(int i=0;i<countElements+1;i++)
+			if(elList[i] instanceof Source)
+				res = recursiveSimulation(elList[i],0);
+		return res;
+	}
+	
+	/**
+	 * starts the simulation of the system
+	 */
+	public void simulate(){
+		
+		for(int i=0;i<countElements+1;i++)
+			if(elList[i] instanceof Source)
+				elList[i].simulate(0);
+	}
+	
+	
+	private String recursiveSimulation(Element el,int strlen) {
+		
+		String res;
+		
+		if (el instanceof Sink) 
+			return "[" + el.getName() + "]Sink";
+
+		else if (el instanceof Source) {
+			res = "[" + el.getName() + "]Source -> ";
+			strlen += res.length();
+			return res + recursiveSimulation(el.getOutput(),strlen);
+		
+		}else if (el instanceof Tap) {
+			res = "[" + el.getName() + "]Tap -> ";
+			strlen += res.length();
+			return res + recursiveSimulation(el.getOutput(),strlen);
+		
+		}else if (el instanceof Split) {
+			res = ("[" + el.getName() + "]Split -> ");
+			Element [] out = ((Split) el).getOutputs();
+			strlen += res.length();
+			String spaces = new String(new char [strlen-4]).replace('\0', ' '), sup;
+			
+			for(Element elem:out) {
+				sup =  recursiveSimulation(elem,strlen) + "\n" + spaces + "|\n" + spaces + " -> ";
+				strlen += sup.length();
+				res += sup;
+			}
+				
+			return res.substring(0, strlen - (spaces + "|\n" + spaces + " ->").length());
+		}
+		
+		return "";
+	}
+	
+
+}

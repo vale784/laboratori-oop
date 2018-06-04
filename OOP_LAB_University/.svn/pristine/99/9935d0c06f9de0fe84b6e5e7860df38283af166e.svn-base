@@ -1,0 +1,38 @@
+package university;
+
+public class Student {
+	
+	private String studFirstName;
+	private String studLastName;
+	private int studId;
+	
+	final static int startId = 10000;
+	
+	/**
+	 * setter
+	 * @return studId
+	 */
+	public int setStud(String first,String last,int studCount) {
+		studFirstName = first;
+		studLastName  = last;
+		return startId + studCount;
+	}
+	
+	/**
+	 * getter
+	 * @return studInfo
+	 */
+	public String getStud(){
+		if(this.studId - startId < 0)
+			return null;
+		return this.studFirstName + " " + this.studLastName + " " + this.studId; 
+	}
+	
+	
+	public int getStudId() {
+		return this.studId;
+	}
+	
+	 
+
+}
